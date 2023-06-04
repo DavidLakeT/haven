@@ -1,11 +1,9 @@
-#[macro_use] extern crate rocket;
+use haven::utils::server::build_server;
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
+#[macro_use]
+extern crate rocket;
 
 #[launch]
 fn rocket() -> _ {
-    rocket::build().mount("/", routes![index])
+    build_server()
 }
