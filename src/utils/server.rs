@@ -1,8 +1,7 @@
-use crate::{webapi::controller::catchers::{
+use crate::webapi::controller::catchers::{
     bad_request, default, forbidden, internal_error, not_found, status, unauthorized,
-}};
+};
 use rocket::{catchers, routes, Build, Rocket};
-
 
 pub fn build_server() -> Rocket<Build> {
     rocket::build().mount("/", routes![status]).register(

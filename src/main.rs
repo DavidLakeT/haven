@@ -1,5 +1,5 @@
-use haven::{utils::server::build_server, discord::bot::init_bot};
 use dotenv::dotenv;
+use haven::{discord::bot::init_bot, utils::server::build_server};
 
 #[macro_use]
 extern crate rocket;
