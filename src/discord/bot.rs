@@ -1,11 +1,7 @@
-use std::{env, sync::Arc};
-
+use crate::discord::command::ping_command::PING_COMMAND;
 use serenity::{
     async_trait,
-    framework::standard::{
-        macros::{command, group},
-        CommandResult, StandardFramework,
-    },
+    framework::standard::{macros::group, StandardFramework},
     model::{
         channel::Message,
         prelude::{ChannelId, Ready},
@@ -13,6 +9,7 @@ use serenity::{
     prelude::GatewayIntents,
     prelude::*,
 };
+use std::{env, sync::Arc};
 
 #[group]
 #[commands(ping)]
@@ -41,14 +38,18 @@ impl EventHandler for Handler {
     }
 
     async fn message(&self, _ctx: Context, msg: Message) {
-        let desired_channel_id = {
-            let desired_channel_id = self.desired_channel_id.lock().await;
-            *desired_channel_id
-        };
+        let user = msg.author;
 
-        if let Some(channel_id) = desired_channel_id {
-            if msg.channel_id == channel_id {
-                println!("Mensaje recibido en el canal deseado: {:?}", msg.content);
+        if !user.bot {
+            let desired_channel_id = {
+                let desired_channel_id = self.desired_channel_id.lock().await;
+                *desired_channel_id
+            };
+
+            if let Some(channel_id) = desired_channel_id {
+                if msg.channel_id == channel_id {
+                    println!("Mensaje recibido en el canal deseado: {:?}", msg.content);
+                }
             }
         }
     }
@@ -76,11 +77,4 @@ pub async fn init_bot() {
     if let Err(why) = client.start().await {
         println!("An error occurred while running the client: {:?}", why);
     }
-}
-
-#[command]
-async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.reply(ctx, "Pong!").await?;
-
-    Ok(())
 }
