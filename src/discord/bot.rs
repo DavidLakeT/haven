@@ -1,4 +1,5 @@
 use crate::discord::command::ping_command::PING_COMMAND;
+use crate::discord::command::metrics_command::METRICS_COMMAND;
 use serenity::{
     async_trait,
     framework::standard::{macros::group, StandardFramework},
@@ -12,7 +13,7 @@ use serenity::{
 use std::{env, sync::Arc};
 
 #[group]
-#[commands(ping)]
+#[commands(ping, metrics)]
 struct General;
 
 struct Handler {
@@ -39,18 +40,23 @@ impl EventHandler for Handler {
 
     async fn message(&self, _ctx: Context, msg: Message) {
         let user = msg.author;
+        let prefix = "!";
 
-        if !user.bot {
-            let desired_channel_id = {
-                let desired_channel_id = self.desired_channel_id.lock().await;
-                *desired_channel_id
-            };
-
-            if let Some(channel_id) = desired_channel_id {
-                if msg.channel_id == channel_id {
-                    println!("Mensaje recibido en el canal deseado: {:?}", msg.content);
+        if !msg.content.starts_with(prefix) {
+            if !user.bot {
+                let desired_channel_id = {
+                    let desired_channel_id = self.desired_channel_id.lock().await;
+                    *desired_channel_id
+                };
+    
+                if let Some(channel_id) = desired_channel_id {
+                    if msg.channel_id == channel_id {
+                        println!("Mensaje recibido en #development: {:?}", msg.content);
+                    }
                 }
             }
+        } else{
+            println!("Comando recibido en #development: {:?}", msg.content);
         }
     }
 }
@@ -60,7 +66,7 @@ pub async fn init_bot() {
     let intents = GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT;
 
     let framework = StandardFramework::new()
-        .configure(|c| c.prefix("."))
+        .configure(|c| c.prefix("!"))
         .group(&GENERAL_GROUP);
 
     let desired_channel_id: Arc<Mutex<Option<ChannelId>>> = Arc::new(Mutex::new(None));
