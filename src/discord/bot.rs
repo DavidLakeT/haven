@@ -1,5 +1,7 @@
-use crate::discord::command::ping_command::PING_COMMAND;
+use crate::discord::command::hello_command::HELLO_COMMAND;
 use crate::discord::command::metrics_command::METRICS_COMMAND;
+use crate::discord::command::ping_command::PING_COMMAND;
+use rocket::log::{private::Level, self};
 use serenity::{
     async_trait,
     framework::standard::{macros::group, StandardFramework},
@@ -13,7 +15,7 @@ use serenity::{
 use std::{env, sync::Arc};
 
 #[group]
-#[commands(ping, metrics)]
+#[commands(ping, metrics, hello)]
 struct General;
 
 struct Handler {
@@ -48,20 +50,21 @@ impl EventHandler for Handler {
                     let desired_channel_id = self.desired_channel_id.lock().await;
                     *desired_channel_id
                 };
-    
+
                 if let Some(channel_id) = desired_channel_id {
                     if msg.channel_id == channel_id {
                         println!("Mensaje recibido en #development: {:?}", msg.content);
                     }
                 }
             }
-        } else{
+        } else {
             println!("Comando recibido en #development: {:?}", msg.content);
         }
     }
 }
 
 pub async fn init_bot() {
+
     let token = env::var("DISCORD_TOKEN").expect("token");
     let intents = GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT;
 
