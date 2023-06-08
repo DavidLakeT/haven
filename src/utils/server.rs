@@ -1,8 +1,12 @@
-use crate::{webapi::controller::catchers::{
+use crate::webapi::controller::catchers::{
     bad_request, default, forbidden, internal_error, not_found, status, unauthorized,
-}};
+};
 use rocket::{catchers, routes, Build, Rocket};
-use rocket::{fairing::{Fairing, Info, Kind}, Request, Response, http::{Header, ContentType, Method, Status}};
+use rocket::{
+    fairing::{Fairing, Info, Kind},
+    http::{ContentType, Header, Method, Status},
+    Request, Response,
+};
 
 pub struct CorsPolicy;
 
@@ -19,7 +23,7 @@ impl Fairing for CorsPolicy {
         response.set_header(Header::new("Access-Control-Allow-Origin", "*"));
         response.set_header(Header::new(
             "Access-Control-Allow-Methods",
-            "POST, PATCH, PUT, DELETE, HEAD, OPTIONS, GET",
+            "GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS",
         ));
         response.set_header(Header::new("Access-Control-Allow-Headers", "*"));
         response.set_header(Header::new(
@@ -36,11 +40,11 @@ impl Fairing for CorsPolicy {
     }
 }
 
-
-pub fn build_server() -> Rocket<Build> {
+pub fn build_rocket() -> Rocket<Build> {
     rocket::build()
         .attach(CorsPolicy)
-        .mount("/", routes![status]).register(
+        .mount("/", routes![status])
+        .register(
             "/",
             catchers![
                 bad_request,
