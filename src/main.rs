@@ -1,23 +1,10 @@
 use dotenv::dotenv;
-use haven::{discord::bot::init_bot, utils::server::build_server};
-use rocket::tokio;
+use haven::utils::server::build_server;
+use rocket::launch;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+#[launch]
+async fn rocket() -> _ {
     env_logger::init();
     dotenv().ok();
-
-    let server_task = tokio::spawn(async {
-        build_server().launch().await.map_err(|e| {
-            eprintln!("Rocket error: {:?}", e);
-        })
-    });
-
-    let bot_task = tokio::spawn(async {
-        init_bot().await;
-    });
-
-    let _ = tokio::try_join!(server_task, bot_task)?;
-
-    Ok(())
+    build_server()
 }
