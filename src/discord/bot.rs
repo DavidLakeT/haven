@@ -1,7 +1,7 @@
 use crate::discord::command::hello_command::HELLO_COMMAND;
 use crate::discord::command::metrics_command::METRICS_COMMAND;
 use crate::discord::command::ping_command::PING_COMMAND;
-use rocket::log::{private::Level, self};
+use rocket::fairing::{Fairing, Info, Kind};
 use serenity::{
     async_trait,
     framework::standard::{macros::group, StandardFramework},
