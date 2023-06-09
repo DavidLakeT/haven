@@ -1,3 +1,4 @@
+use super::handler::handler::Handler;
 use crate::discord::command::hello_command::HELLO_COMMAND;
 use crate::discord::command::metrics_command::METRICS_COMMAND;
 use crate::discord::command::ping_command::PING_COMMAND;
@@ -8,7 +9,6 @@ use serenity::{
     prelude::*,
 };
 use std::{env, sync::Arc};
-use super::handler::handler::Handler;
 
 #[group]
 #[commands(ping, metrics, hello)]

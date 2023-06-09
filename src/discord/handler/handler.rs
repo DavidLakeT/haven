@@ -1,7 +1,10 @@
 use std::sync::Arc;
 
 use rocket::async_trait;
-use serenity::{prelude::{Mutex, EventHandler, Context}, model::prelude::{ChannelId, Ready, Message}};
+use serenity::{
+    model::prelude::{ChannelId, Message, Ready},
+    prelude::{Context, EventHandler, Mutex},
+};
 
 pub struct Handler {
     pub desired_channel_id: Arc<Mutex<Option<ChannelId>>>,
