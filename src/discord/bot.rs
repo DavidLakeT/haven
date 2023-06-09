@@ -19,7 +19,7 @@ pub async fn build_discord() {
     let intents = GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT;
 
     let framework = StandardFramework::new()
-        .configure(|c| c.prefix("!"))
+        .configure(|c| c.prefix("."))
         .group(&GENERAL_GROUP);
 
     let desired_channel_id: Arc<Mutex<Option<ChannelId>>> = Arc::new(Mutex::new(None));

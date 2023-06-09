@@ -2,7 +2,7 @@ use serenity::{
     framework::standard::{macros::command, CommandResult},
     model::prelude::Message,
     prelude::Context,
-    utils::{MessageBuilder, EmbedMessageBuilding},
+    utils::MessageBuilder,
 };
 
 #[command]
