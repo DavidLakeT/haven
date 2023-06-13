@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use rocket::async_trait;
 use serenity::{
+    async_trait,
     model::prelude::{ChannelId, Message, Ready},
     prelude::{Context, EventHandler, Mutex},
 };

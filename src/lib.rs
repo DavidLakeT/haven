@@ -1,3 +1,2 @@
 pub mod discord;
-pub mod utils;
-pub mod webapi;
+pub mod github;
