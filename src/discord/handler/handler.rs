@@ -1,52 +1,33 @@
-use std::sync::Arc;
-
+use octocrab::{models::Repository, Octocrab};
 use serenity::{
     async_trait,
-    model::prelude::{ChannelId, Message, Ready},
-    prelude::{Context, EventHandler, Mutex},
+    http::Http,
+    model::prelude::{ChannelId, Ready},
+    prelude::{Context, EventHandler, TypeMapKey},
 };
 
+#[derive(Clone)]
 pub struct Handler {
-    pub desired_channel_id: Arc<Mutex<Option<ChannelId>>>,
+    pub octocrab: Octocrab,
+}
+
+impl TypeMapKey for Handler {
+    type Value = Handler;
 }
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn ready(&self, ctx: Context, ready: Ready) {
-        if let Some(guild_id) = ready.guilds.get(0).map(|guild| guild.id) {
-            if let Some(guild) = ready.guilds.iter().find(|g| g.id == guild_id) {
-                if let Ok(channels) = guild.id.channels(&ctx.http).await {
-                    if let Some((channel_id, _)) =
-                        channels.iter().find(|(_, c)| c.name == "development")
-                    {
-                        let channel_id = channel_id;
-                        let mut desired_channel_id = self.desired_channel_id.lock().await;
-                        *desired_channel_id = Some(*channel_id);
-                    }
-                }
-            }
-        }
+    async fn ready(&self, _: Context, ready: Ready) {
+        println!("Connected as {}", ready.user.name);
     }
+}
 
-    async fn message(&self, _ctx: Context, msg: Message) {
-        let user = msg.author;
-        let prefix = "!";
-
-        if !msg.content.starts_with(prefix) {
-            if !user.bot {
-                let desired_channel_id = {
-                    let desired_channel_id = self.desired_channel_id.lock().await;
-                    *desired_channel_id
-                };
-
-                if let Some(channel_id) = desired_channel_id {
-                    if msg.channel_id == channel_id {
-                        println!("Mensaje recibido en #development: {:?}", msg.content);
-                    }
-                }
-            }
-        } else {
-            println!("Comando recibido en #development: {:?}", msg.content);
-        }
+impl Handler {
+    pub async fn get_repository_info(
+        &self,
+        http: &Http,
+        channel_id: ChannelId,
+    ) -> Result<Repository, octocrab::Error> {
+        self.octocrab.repos("DavidLakeT", "haven").get().await
     }
 }

@@ -1,5 +1,5 @@
 use dotenv::dotenv;
-use haven::{discord::bot::build_discord, github::server::get_repository};
+use haven::discord::bot::build_discord;
 
 #[tokio::main]
 async fn main() {

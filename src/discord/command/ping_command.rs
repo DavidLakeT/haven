@@ -23,8 +23,7 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
                     "Menú help",
                     format!(
                         "Tenemos {} categorías y {} comandos para explorar.",
-                        "0",
-                        "0"
+                        "0", "0"
                     ),
                     false,
                 )
