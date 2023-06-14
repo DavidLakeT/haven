@@ -1,8 +1,7 @@
 use octocrab::{models::Repository, Octocrab};
 use serenity::{
     async_trait,
-    http::Http,
-    model::prelude::{ChannelId, Ready},
+    model::prelude::Ready,
     prelude::{Context, EventHandler, TypeMapKey},
 };
 
@@ -23,11 +22,7 @@ impl EventHandler for Handler {
 }
 
 impl Handler {
-    pub async fn get_repository_info(
-        &self,
-        http: &Http,
-        channel_id: ChannelId,
-    ) -> Result<Repository, octocrab::Error> {
-        self.octocrab.repos("DavidLakeT", "haven").get().await
+    pub async fn get_repository_info(&self, repository_name: String) -> Result<Repository, octocrab::Error> {
+        self.octocrab.repos("DavidLakeT", repository_name).get().await
     }
 }
