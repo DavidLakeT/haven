@@ -22,7 +22,14 @@ impl EventHandler for Handler {
 }
 
 impl Handler {
-    pub async fn get_repository_info(&self, repository_name: String) -> Result<Repository, octocrab::Error> {
-        self.octocrab.repos("DavidLakeT", repository_name).get().await
+    pub async fn get_repository_info(
+        &self,
+        repository_author: String,
+        repository_name: String,
+    ) -> Result<Repository, octocrab::Error> {
+        self.octocrab
+            .repos(repository_author, repository_name)
+            .get()
+            .await
     }
 }
