@@ -47,7 +47,6 @@ async fn repository(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
                     m.embed(|e| {
                         e.color(0x0099FF)
                             .title("Click here to view repository")
-                            //.author(|a| a.name("Nombre del autor").icon_url("https://i.pinimg.com/474x/fa/10/cd/fa10cdaaf6d4303fcd96217a69a6b078.jpg"))
                             .field("Name", repository.full_name.unwrap(), true)
                             .field("Stars", repository.stargazers_count.unwrap(), true)
                             .field("Forks", repository.forks_count.unwrap(), true)

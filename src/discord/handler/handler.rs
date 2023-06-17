@@ -1,4 +1,4 @@
-use octocrab::{models::Repository, Octocrab};
+use octocrab::{models::{Repository, repos::{Commit, RepoCommit}}, Octocrab};
 use serenity::{
     async_trait,
     model::prelude::Ready,
@@ -31,5 +31,18 @@ impl Handler {
             .repos(repository_author, repository_name)
             .get()
             .await
+    }
+
+    pub async fn get_repository_commits(
+        &self,
+        repository_author: String,
+        repository_name: String,
+    ) -> Result<Vec<RepoCommit>, octocrab::Error> {
+        self.octocrab
+            .repos(repository_author, repository_name)
+            .list_commits()
+            .send()
+            .await
+            .map(|response| response.items)
     }
 }
