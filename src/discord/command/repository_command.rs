@@ -7,7 +7,7 @@ use serenity::{
 use crate::discord::handler::handler::Handler;
 
 #[command]
-#[num_args(2)]
+#[description = "Shows information about a Git repository."]
 async fn repository(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let data = ctx.data.read().await;
     let handler = data.get::<Handler>().unwrap();
