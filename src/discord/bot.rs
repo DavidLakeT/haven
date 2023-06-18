@@ -1,7 +1,4 @@
 use super::handler::handler::Handler;
-use crate::discord::command::hello_command::HELLO_COMMAND;
-use crate::discord::command::metrics_command::METRICS_COMMAND;
-use crate::discord::command::ping_command::PING_COMMAND;
 use crate::discord::command::repository_command::REPOSITORY_COMMAND;
 use crate::discord::command::commits_command::COMMITS_COMMAND;
 use octocrab::Octocrab;
@@ -13,7 +10,7 @@ use serenity::{
 use std::env;
 
 #[group]
-#[commands(ping, metrics, hello, repository, commits)]
+#[commands(repository, commits)]
 struct General;
 
 pub async fn build_discord() {
