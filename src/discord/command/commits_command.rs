@@ -1,3 +1,5 @@
+use crate::discord::application::handler::Handler;
+use log::error;
 use serenity::{
     builder::CreateEmbed,
     framework::standard::{macros::command, Args, CommandResult},
@@ -5,9 +7,8 @@ use serenity::{
     prelude::Context,
 };
 
-use crate::discord::application::handler::Handler;
-
 #[command]
+#[description = "Lists last commits from a Git repository."]
 async fn commits(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let data = ctx.data.read().await;
     let handler = data.get::<Handler>().unwrap();
@@ -44,7 +45,7 @@ async fn commits(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
             };
 
             let mut embed = CreateEmbed::default();
-            embed.color(0x0099FF).title("Commits info").image(format!(
+            embed.color(0x0099FF).title("Last commits info").image(format!(
                 "https://avatars.githubusercontent.com/{repository_author}"
             ));
 
@@ -59,9 +60,16 @@ async fn commits(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
                 .send_message(&ctx, |m| m.set_embed(embed))
                 .await;
         }
-        Err(_) => {
-            let _ = msg.channel_id.say(&ctx.http, "Error").await;
-        }
+        Err(_) => match msg
+            .channel_id
+            .say(&ctx.http, "Error: Not found")
+            .await
+        {
+            Ok(_) => {}
+            Err(serenity_err) => {
+                error!("There was an error: {serenity_err:?}");
+            }
+        },
     }
 
     Ok(())
