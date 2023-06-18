@@ -1,10 +1,10 @@
+use crate::discord::application::handler::Handler;
+use log::error;
 use serenity::{
     framework::standard::{macros::command, Args, CommandResult},
     model::prelude::Message,
     prelude::Context,
 };
-
-use crate::discord::handler::handler::Handler;
 
 #[command]
 #[description = "Shows information about a Git repository."]
@@ -30,12 +30,15 @@ async fn repository(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
         }
     };
 
-    match handler.get_repository_info(repository_author.clone(), repository_name).await {
+    match handler
+        .get_repository_info(repository_author.clone(), repository_name)
+        .await
+    {
         Ok(repository) => {
             let channel = match msg.channel_id.to_channel(&ctx).await {
                 Ok(channel) => channel,
                 Err(why) => {
-                    println!("Error getting channel: {:?}", why);
+                    println!("Error getting channel: {why:?}");
                     return Ok(());
                 }
             };
@@ -51,14 +54,19 @@ async fn repository(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
                             .field("Stars", repository.stargazers_count.unwrap(), true)
                             .field("Forks", repository.forks_count.unwrap(), true)
                             .field("Description", repository.description.unwrap(), true)
-                            .image(format!("https://avatars.githubusercontent.com/{}", repository_author))
+                            .image(format!(
+                                "https://avatars.githubusercontent.com/{repository_author}"
+                            ))
                             .url(repository.html_url.unwrap())
-                        })
+                    })
                 })
                 .await;
         }
         Err(_) => match msg.channel_id.say(&ctx.http, "Error").await {
-            _ => {}
+            Ok(_) => {}
+            Err(e) => {
+                error!("There was an error: {}", e);
+            }
         },
     }
 

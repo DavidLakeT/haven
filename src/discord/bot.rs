@@ -1,6 +1,7 @@
-use super::handler::handler::Handler;
-use crate::discord::command::repository_command::REPOSITORY_COMMAND;
+use super::application::handler::Handler;
 use crate::discord::command::commits_command::COMMITS_COMMAND;
+use crate::discord::command::repository_command::REPOSITORY_COMMAND;
+use dotenv::dotenv;
 use octocrab::Octocrab;
 use serenity::{
     framework::standard::{macros::group, StandardFramework},
@@ -14,6 +15,9 @@ use std::env;
 struct General;
 
 pub async fn build_discord() {
+    env_logger::init();
+    dotenv().ok();
+
     let discord_token = env::var("DISCORD_TOKEN").expect("token");
     let github_token = env::var("GITHUB_TOKEN").expect("GitHub token not found");
 
@@ -41,6 +45,6 @@ pub async fn build_discord() {
     }
 
     if let Err(why) = client.start().await {
-        println!("An error occurred while running the client: {:?}", why);
+        println!("An error occurred while running the client: {why:?}");
     }
 }

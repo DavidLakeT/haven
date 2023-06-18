@@ -1,4 +1,7 @@
-use octocrab::{models::{Repository, repos::{Commit, RepoCommit}}, Octocrab};
+use octocrab::{
+    models::{repos::RepoCommit, Repository},
+    Octocrab,
+};
 use serenity::{
     async_trait,
     model::prelude::Ready,
