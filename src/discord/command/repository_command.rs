@@ -62,11 +62,7 @@ async fn repository(ctx: &Context, msg: &Message, mut args: Args) -> CommandResu
                 })
                 .await;
         }
-        Err(_) => match msg
-            .channel_id
-            .say(&ctx.http, "Error: Not found")
-            .await
-        {
+        Err(_) => match msg.channel_id.say(&ctx.http, "Error: Not found").await {
             Ok(_) => {}
             Err(serenity_err) => {
                 error!("There was an error: {}", serenity_err);

@@ -8,8 +8,8 @@ use serenity::{
 };
 
 #[command]
-#[description = "Lists last commits from a Git repository."]
-async fn commits(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
+#[description = "Lists last pull requests from a Git repository."]
+async fn pullrequests(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult {
     let data = ctx.data.read().await;
     let handler = data.get::<Handler>().unwrap();
 
@@ -32,10 +32,10 @@ async fn commits(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
     };
 
     match handler
-        .get_repository_commits(repository_author.clone(), repository_name)
+        .get_repository_pull_requests(repository_author.clone(), repository_name)
         .await
     {
-        Ok(commits) => {
+        Ok(pull_requests) => {
             let channel = match msg.channel_id.to_channel(&ctx).await {
                 Ok(channel) => channel,
                 Err(why) => {
@@ -47,14 +47,18 @@ async fn commits(ctx: &Context, msg: &Message, mut args: Args) -> CommandResult 
             let mut embed = CreateEmbed::default();
             embed
                 .color(0x0099FF)
-                .title("Last commits info")
+                .title("Last pull requests info")
                 .image(format!(
                     "https://avatars.githubusercontent.com/{repository_author}"
                 ));
 
-            let commits = commits.into_iter().take(5);
-            for (idx, commit) in commits.enumerate() {
-                embed.field(format!("Commit #{}", idx + 1), commit.commit.message, false);
+            let pull_requests = pull_requests.into_iter().take(5);
+            for (idx, pull_request) in pull_requests.enumerate() {
+                embed.field(
+                    format!("Pull request #{}", idx + 1),
+                    pull_request.title.unwrap(),
+                    false,
+                );
             }
 
             let _ = channel

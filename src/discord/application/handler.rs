@@ -1,5 +1,5 @@
 use octocrab::{
-    models::{repos::RepoCommit, Repository},
+    models::{pulls::PullRequest, repos::RepoCommit, Repository},
     Octocrab,
 };
 use serenity::{
@@ -44,6 +44,20 @@ impl Handler {
         self.octocrab
             .repos(repository_author, repository_name)
             .list_commits()
+            .send()
+            .await
+            .map(|response| response.items)
+    }
+
+    pub async fn get_repository_pull_requests(
+        &self,
+        repository_author: String,
+        repository_name: String,
+    ) -> Result<Vec<PullRequest>, octocrab::Error> {
+        self.octocrab
+            .pulls(repository_author, repository_name)
+            .list()
+            .state(octocrab::params::State::All)
             .send()
             .await
             .map(|response| response.items)
