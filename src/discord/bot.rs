@@ -1,25 +1,19 @@
 use super::application::handler::Handler;
-use crate::discord::command::commits_command::COMMITS_COMMAND;
-use crate::discord::command::pullrequests_command::PULLREQUESTS_COMMAND;
-use crate::discord::command::repository_command::REPOSITORY_COMMAND;
+use crate::discord::group::general_group::GENERAL_GROUP;
 use dotenv::dotenv;
 use octocrab::Octocrab;
 use serenity::{
-    framework::standard::{macros::group, StandardFramework},
+    framework::standard::StandardFramework,
     prelude::GatewayIntents,
     prelude::*,
 };
 use std::env;
 
-#[group]
-#[commands(repository, commits, pullrequests)]
-struct General;
-
 pub async fn build_discord() {
     env_logger::init();
     dotenv().ok();
 
-    let discord_token = env::var("DISCORD_TOKEN").expect("token");
+    let discord_token = env::var("DISCORD_TOKEN").expect("Discord token not found");
     let github_token = env::var("GITHUB_TOKEN").expect("GitHub token not found");
 
     let intents = GatewayIntents::non_privileged() | GatewayIntents::MESSAGE_CONTENT;
@@ -40,12 +34,14 @@ pub async fn build_discord() {
         .await
         .expect("Error creating client");
 
+    let shards = 1;
+
     {
         let mut data = client.data.write().await;
         data.insert::<Handler>(handler.clone());
     }
 
-    if let Err(why) = client.start().await {
+    if let Err(why) = client.start_shards(shards).await {
         println!("An error occurred while running the client: {why:?}");
     }
 }
