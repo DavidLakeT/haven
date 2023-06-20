@@ -2,11 +2,7 @@ use super::application::handler::Handler;
 use crate::discord::group::general_group::GENERAL_GROUP;
 use dotenv::dotenv;
 use octocrab::Octocrab;
-use serenity::{
-    framework::standard::StandardFramework,
-    prelude::GatewayIntents,
-    prelude::*,
-};
+use serenity::{framework::standard::StandardFramework, prelude::GatewayIntents, prelude::*};
 use std::env;
 
 pub async fn build_discord() {
