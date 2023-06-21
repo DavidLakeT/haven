@@ -1,4 +1,4 @@
-use std::env;
+use serenity::model::prelude::command::{Command, CommandOptionType};
 
 pub struct Connection {
     pub client: reqwest::Client,
@@ -6,17 +6,30 @@ pub struct Connection {
 
 impl Connection {
     pub async fn register_commands(
-        &self
+        &self,
+        client: serenity::Client
     ) -> Result<(), reqwest::Error> {
-
-        /*
-        let response = self.client
-            .post(format!("https://discord.com/api/v10/applications/{}/commands", 1059938872370397286))
-            .header(reqwest::header::AUTHORIZATION, format!("Bot {}", env::var("DISCORD_TOKEN").expect("Discord token not found");))
-            .json(command_data)
-            .send()
-            .await?;
-         */
+        let _ = Command::create_global_application_command(&client.cache_and_http.http, 
+            |command| {
+                command
+                    .name("repository")
+                    .description("Shows information about a Git repository")
+                    .create_option(|option| {
+                        option
+                            .name("repository owner")
+                            .description("Github username of the repository owner")
+                            .kind(CommandOptionType::String)
+                            .required(true)
+                            .create_sub_option(|sub_option| {
+                                sub_option
+                                    .name("repository name")
+                                    .description("Name of the Github repository")
+                                    .kind(CommandOptionType::String)
+                                    .required(true)
+                            })
+                    })
+        })
+        .await;
 
         Ok(())
     }
