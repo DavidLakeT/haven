@@ -2,11 +2,8 @@ use octocrab::{
     models::{pulls::PullRequest, repos::RepoCommit, Repository},
     Octocrab,
 };
-use serenity::{
-    async_trait,
-    model::prelude::Ready,
-    prelude::{Context, EventHandler, TypeMapKey},
-};
+use poise::serenity_prelude as serenity;
+use serenity::{async_trait, model::prelude::Ready, Context, EventHandler, TypeMapKey};
 
 #[derive(Clone)]
 pub struct Handler {
