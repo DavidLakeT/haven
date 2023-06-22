@@ -15,7 +15,7 @@ pub async fn commits(
         .await
     {
         Ok(commits) => {
-            if commits.len() == 0 {
+            if commits.is_empty() {
                 ctx.send(|m| m.content("No commits found.")).await?;
                 return Ok(());
             }

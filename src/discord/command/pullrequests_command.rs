@@ -15,7 +15,7 @@ pub async fn pullrequests(
         .await
     {
         Ok(pull_requests) => {
-            if pull_requests.len() == 0 {
+            if pull_requests.is_empty() {
                 ctx.send(|m| m.content("No pull requests found.")).await?;
                 return Ok(());
             }

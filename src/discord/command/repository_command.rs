@@ -24,8 +24,7 @@ pub async fn repository(
                         .field("Forks", repository.forks_count.unwrap(), true)
                         .field("Description", repository.description.unwrap(), true)
                         .image(format!(
-                            "https://avatars.githubusercontent.com/{}",
-                            repository_owner
+                            "https://avatars.githubusercontent.com/{repository_owner}"
                         ))
                         .url(repository.html_url.unwrap())
                 })
